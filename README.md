@@ -1,2 +1,2 @@
-roulette-game-list
+roulette_game_list
 ==================
