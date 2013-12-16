@@ -18,6 +18,32 @@
         <table class="table table-striped">
             <thead>
                 <tr align="center">
+                    <th width="10%" align="center" colspan="2">probability</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.colorProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.highLowProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.OddEvenProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.columnAProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.columnBProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.columnCProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.dozenLowProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.dozenMiddleProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.dozenHighProbability%</th>
+                    <th width="8%" align="center">@rouletteLists.probabilityValue.dozenMiddleAndHighProbability%</th>
+                </tr>
+                <tr align="center">
+                    <th width="10%" align="center" colspan="2">success count</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.colorCount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.highLowCount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.OddEvenCount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.columnACount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.columnBCount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.columnCCount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.dozenLowCount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.dozenMiddleCount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.dozenHighCount</th>
+                    <th width="8%" align="center">@rouletteLists.countValue.dozenMiddleAndHighCount</th>
+                </tr>
+                <tr align="center">
                     <th width="10%" align="center">Game<br>Count</th>
                     <th width="10%" align="center">Number</th>
                     <th width="8%" align="center">color</th>
@@ -35,21 +61,17 @@
             @rouletteLists.rouletteWithNumber.map { rouletteList =>
             <tr>
                 <td align="right">@rouletteList.roulette.gameConut</td>
-                <td align="right">@rouletteList.roulette.rouletteNumber</td>
-                <td align="center">@rouletteList.numberList.color</td>
-                <td align="center">@rouletteList.numberList.highLow</td>
-                <td align="center">@rouletteList.numberList.oddEven</td>
-                <td align="center">
-                    @rouletteList.numberList.columnBet
-                </td>
-                <td align="center">
-                </td>
-                <td align="center">
-                </td>
-                <td align="center">@rouletteList.numberList.dozenBet</td>
-                <td align="center">@rouletteList.numberList.dozenBet</td>
-                <td align="center">@rouletteList.numberList.dozenBet</td>
-                <td align="center">@rouletteList.numberList.dozenBet</td>
+                <td >@rouletteList.roulette.rouletteNumber</td>
+                <td align="center">@if(rouletteList.numberList.color == 1) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.highLow == 1) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.oddEven == 1) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.columnBet == 0) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.columnBet == 1) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.columnBet == 2) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.dozenBet == 0) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.dozenBet == 1) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.dozenBet == 2) { ○ }</td>
+                <td align="center">@if(rouletteList.numberList.dozenBet == 1 || rouletteList.numberList.dozenBet == 2) { ○ }</td>
             </tr>
             }
         </table>
