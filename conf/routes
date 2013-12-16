@@ -5,5 +5,15 @@
 # Home page
 GET     /                           controllers.Application.index
 
+# play game
+GET    /game                        controllers.PlayGameController.index
+POST   /game                        controllers.PlayGameController.create
+POST   /game/:id/delete             controllers.PlayGameController.delete(id: Long)
+
+# roulette list
+GET    /roulette/:playGameId                        controllers.RouletteListController.index(playGameId: Long)
+POST   /roulette/:playGameId                        controllers.RouletteListController.create(playGameId: Long)
+POST   /roulette/:playGameId/:id/delete             controllers.RouletteListController.delete(playGameId: Long, id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

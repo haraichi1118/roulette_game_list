@@ -1,0 +1,25 @@
+@(playGames: List[PlayGame], playGameForm: Form[String])
+
+@import helper._
+
+@main("play game list") {
+    <div class="row">
+        <div class="span4 bs-sidebar " role="complementary">
+
+            <h3><span class="label label-important">please input play game title!</span></h3>
+            @form(routes.PlayGameController.create) {
+                @inputText(playGameForm("title"))
+                <input type="submit" class="btn btn-inverse" value="create"/>
+            }
+        </div>
+        <div class="span8" role="main">
+                @playGames.map { playGame =>
+                    <a href="/roulette/@playGame.id">@playGame.title</a>
+                    @form(routes.PlayGameController.delete(playGame.id)) {
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    }
+                }
+        </div>
+    </div>
+
+}
