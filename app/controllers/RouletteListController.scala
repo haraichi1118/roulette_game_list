@@ -40,16 +40,12 @@ object RouletteListController extends Controller {
     rouletteListform.bindFromRequest.fold(
       errors => BadRequest(views.html.rouletteList(RouletteService.getRouletteDate(playGameId), errors, playGameId)),
       rouletteNumber => {
+
         val id = RouletteLists.findByPlayGameId(playGameId)
-
-        println("RouletteListController#create findByPlayGameId =" + id)
-
         val maxCount: Long = id.length match {
           case 0 => 0
           case _ => id.head.gameConut
         }
-        println("RouletteListController#create maxCount =" + maxCount)
-
         RouletteLists.create(rouletteNumber, playGameId, (maxCount+1))
         Redirect(routes.RouletteListController.index(playGameId))
       }

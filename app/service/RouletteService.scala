@@ -63,7 +63,6 @@ object RouletteService {
         RouletteDate.apply(result, countValue, probability)
     }
 
-
   }
 
   private def calculate(gameCount: Long, value: Long): Long = {
