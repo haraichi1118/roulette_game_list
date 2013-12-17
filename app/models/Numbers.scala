@@ -44,7 +44,17 @@ object Numbers {
   }
 
   def findById(rouletteNumber: Long): Number = DB.withConnection { implicit  c =>
-    SQL("select * from number where roulette_number = {roulette_number}").on('roulette_number -> rouletteNumber).as(number.single)
+    val q =
+      """
+        |SELECT
+        |  *
+        |FROM
+        |  number
+        |WHERE
+        |  roulette_number = {roulette_number}
+      """.stripMargin
+
+    SQL(q).on('roulette_number -> rouletteNumber).as(number.single)
   }
 
 
