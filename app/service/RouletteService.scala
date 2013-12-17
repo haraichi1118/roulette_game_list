@@ -49,9 +49,9 @@ object RouletteService {
         val high = result.filter(r => r.numberList.highLow == 1).length
         val odd = result.filter(r => r.numberList.oddEven == 1).length
         val column = result.groupBy(_.numberList.columnBet).map(x => (x._1, x._2.length))
-        val (a, b, c) = (column.get(0).getOrElse(0), column.get(1).getOrElse(0), column.get(2).getOrElse(0))
+        val (a, b, c) = (column.get(ColumnBet.A.id).getOrElse(0), column.get(ColumnBet.B.id).getOrElse(0), column.get(ColumnBet.C.id).getOrElse(0))
         val dozen = result.groupBy(_.numberList.dozenBet).map(x => (x._1, x._2.length))
-        val (dLow, dMiddle, dHigh) = (dozen.get(0).getOrElse(0), dozen.get(1).getOrElse(0), dozen.get(2).getOrElse(0))
+        val (dLow, dMiddle, dHigh) = (dozen.get(DozenBet.LOW.id).getOrElse(0), dozen.get(DozenBet.MIDDLE.id).getOrElse(0), dozen.get(DozenBet.HIGH.id).getOrElse(0))
         val dMiddleAndHigh = dMiddle + dHigh
 
         implicit val gameCount: GameCount = result.head.roulette.gameConut
@@ -68,11 +68,30 @@ object RouletteService {
 
   }
 
+  /**
+   * 確率の計算をします
+   * @param value
+   * @param gameCount
+   * @return
+   */
   private def calculate(value: Long)(implicit gameCount: GameCount): Long = {
+
     try {
-      Math.round(value / gameCount) * 100
+      val answer = BigDecimal.apply(value)./(BigDecimal.apply(gameCount)).
+        setScale(2, BigDecimal.RoundingMode.HALF_UP).*(BigDecimal.apply(100))
+
+      answer.toLong
     } catch {
       case e: Exception => 0
     }
   }
+
+  object ColumnBet extends Enumeration {
+    val A, B, C = Value
+  }
+
+  object DozenBet extends Enumeration {
+    val LOW, MIDDLE, HIGH = Value
+  }
+
 }
