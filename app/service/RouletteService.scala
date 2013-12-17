@@ -6,6 +6,7 @@ import models.{Numbers, RouletteLists, RouletteList, Number}
 case class CountValue(colorCount: Long, highLowCount: Long, OddEvenCount: Long, columnACount: Long, columnBCount: Long,
                       columnCCount: Long, dozenLowCount: Long, dozenMiddleCount: Long, dozenHighCount: Long,
                       dozenMiddleAndHighCount: Long)
+
 // 成功確率
 case class ProbabilityValue(colorProbability: Long, highLowProbability: Long, OddEvenProbability: Long,
                             columnAProbability: Long, columnBProbability: Long, columnCProbability: Long,
@@ -25,12 +26,14 @@ case class RouletteDate(rouletteWithNumber: List[RouletteWithNumber], countValue
  */
 object RouletteService {
 
+  type GameCount = Long
+
   def getRouletteDate(playGameId: Long): RouletteDate = {
 
     // ルーレットデータ取得
     val result: List[RouletteWithNumber] = RouletteLists.findByPlayGameId(playGameId) map {
       rList =>
-        // ルーレットデータに対するnumberを取得
+      // ルーレットデータに対するnumberを取得
         val rouletteNumber: Number = Numbers.findById(rList.rouletteNumber)
         RouletteWithNumber.apply(rList, rouletteNumber)
     }
@@ -43,34 +46,33 @@ object RouletteService {
       case _ =>
         // 集計 TODO もっと良いやり方ありそう
         val black = result.filter(r => r.numberList.color == 1).length
-        val high  = result.filter(r => r.numberList.highLow == 1).length
+        val high = result.filter(r => r.numberList.highLow == 1).length
         val odd = result.filter(r => r.numberList.oddEven == 1).length
-        val a = result.filter(r => r.numberList.columnBet == 0).length
-        val b = result.filter(r => r.numberList.columnBet == 1).length
-        val c = result.filter(r => r.numberList.columnBet == 2).length
-        val dLow = result.filter(r => r.numberList.dozenBet == 0).length
-        val dMiddle = result.filter(r => r.numberList.dozenBet == 1).length
-        val dHigh = result.filter(r => r.numberList.dozenBet == 2).length
+        val column = result.groupBy(_.numberList.columnBet).map(x => (x._1, x._2.length))
+        val (a, b, c) = (column.get(0).getOrElse(0), column.get(1).getOrElse(0), column.get(2).getOrElse(0))
+        val dozen = result.groupBy(_.numberList.dozenBet).map(x => (x._1, x._2.length))
+        val (dLow, dMiddle, dHigh) = (dozen.get(0).getOrElse(0), dozen.get(1).getOrElse(0), dozen.get(2).getOrElse(0))
         val dMiddleAndHigh = dMiddle + dHigh
 
-        val countValue = CountValue.apply(black, high, odd, a, b, c, dLow, dMiddle, dHigh, dMiddle)
+        implicit val gameCount: GameCount = result.head.roulette.gameConut
 
-        val gameCount = result.head.roulette.gameConut
-        val probability = ProbabilityValue.apply(calculate(black, gameCount), calculate(high, gameCount),
-          calculate(odd, gameCount), calculate(a, gameCount), calculate(b, gameCount),calculate(c, gameCount),
-          calculate(dLow, gameCount), calculate(dMiddle, gameCount), calculate(dHigh, gameCount), calculate(dMiddle, gameCount))
+        val probability = ProbabilityValue(calculate(black), calculate(high),
+          calculate(odd), calculate(a), calculate(b), calculate(c),
+          calculate(dLow), calculate(dMiddle), calculate(dHigh), calculate(dMiddleAndHigh))
 
-        RouletteDate.apply(result, countValue, probability)
+        RouletteDate(
+          result,
+          CountValue(black, high, odd, a, b, c, dLow, dMiddle, dHigh, dMiddleAndHigh),
+          probability)
     }
 
   }
 
-  private def calculate(gameCount: Long, value: Long): Long = {
+  private def calculate(value: Long)(implicit gameCount: GameCount): Long = {
     try {
       Math.round(value / gameCount) * 100
     } catch {
       case e: Exception => 0
     }
   }
-
 }
