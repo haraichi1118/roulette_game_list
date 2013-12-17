@@ -27,11 +27,6 @@ object RouletteLists {
     }
   }
 
-  val maxId = {
-    get[Long]("max_Id") map {
-      case maxId => MaxId(maxId)
-    }
-  }
 
   def findAll(): List[RouletteList] = DB.withConnection { implicit  c =>
     SQL("select * from roulette_list order by id desc").as(rouletteList *)
@@ -41,12 +36,6 @@ object RouletteLists {
     SQL("""select * from roulette_list where play_game_id = {play_game_id} order by id desc""")
       .on('play_game_id -> playGameId)
       .as(rouletteList *)
-  }
-
-  def findMaxId(playGameId: Long): Option[MaxId] = DB.withConnection { implicit  c =>
-    SQL("""select max(id) as max_Id from roulette_list where play_game_id = {play_game_id}""")
-      .on('play_game_id -> playGameId)
-      .as(maxId.singleOpt)
   }
 
   def create(rouletteNumber: Long, playGameId: Long, gameCount: Long) {
