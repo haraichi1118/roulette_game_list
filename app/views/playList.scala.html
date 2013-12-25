@@ -22,4 +22,13 @@
         </div>
     </div>
 
+    <div ng-controller="gameListController">
+        <p>{{games.length}} games.</p>
+        <ul>
+            <li ng-repeat="game in games.data">
+                {{game.id}}
+            </li>
+        </ul>
+    </div>
+
 }

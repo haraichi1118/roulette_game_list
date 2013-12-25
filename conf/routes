@@ -7,11 +7,13 @@ GET     /                           controllers.Application.index
 
 # play game
 GET    /game                        controllers.PlayGameController.index
+GET    /game/list                   controllers.PlayGameController.list
 POST   /game                        controllers.PlayGameController.create
 POST   /game/:id/delete             controllers.PlayGameController.delete(id: Long)
 
 # roulette list
 GET    /roulette/:playGameId                        controllers.RouletteListController.index(playGameId: Long)
+GET    /roulette/list/:playGameId                   controllers.RouletteListController.list(playGameId: Long)
 POST   /roulette/:playGameId                        controllers.RouletteListController.create(playGameId: Long)
 POST   /roulette/:playGameId/:id/delete             controllers.RouletteListController.delete(playGameId: Long, id: Long)
 

@@ -4,8 +4,14 @@ import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.RouletteLists
-import service.RouletteService
+import models.{Number, RouletteList, PlayGames, RouletteLists}
+import service._
+import play.api.libs.json.Json
+import service.RouletteDate
+import models.Number
+import models.RouletteList
+import service.ProbabilityValue
+import service.CountValue
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +20,14 @@ import service.RouletteService
  * Time: 14:56
  * To change this template use File | Settings | File Templates.
  */
-object RouletteListController extends Controller {
+object RouletteListController extends BaseController {
+
+  implicit val numberFormat = Json.format[Number]
+  implicit val rouletteListFormat = Json.format[RouletteList]
+  implicit val countValueFormat = Json.format[CountValue]
+  implicit val probabilityValueFormat = Json.format[ProbabilityValue]
+  implicit val rouletteWithNumberFormat = Json.format[RouletteWithNumber]
+  implicit val rouletteDateFormat = Json.format[RouletteDate]
 
   val rouletteListform = Form(
     "rouletteNumber" -> number
@@ -28,6 +41,16 @@ object RouletteListController extends Controller {
   def index(playGameId: Long) = Action {
     println("RouletteListController#index id=" + playGameId)
     Ok(views.html.rouletteList(RouletteService.getRouletteDate(playGameId), rouletteListform, playGameId))
+  }
+
+  /**
+   * ゲームIDを元にルーレット一覧を表示します
+   * @param playGameId
+   * @return
+   */
+  def list(playGameId: Long) = Action {
+    implicit req =>
+      response(req, Json.toJson(RouletteService.getRouletteDate(playGameId)))
   }
 
   /**
